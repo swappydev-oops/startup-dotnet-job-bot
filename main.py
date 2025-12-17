@@ -1,7 +1,7 @@
 from scraper.wellfound import fetch_jobs as fetch_wellfound
 from scraper.cutshort import fetch_jobs as fetch_cutshort
 from filter.job_filter import is_dotnet_job, estimate_bgv
-from email_templates.email_generator import generate_email
+from email_template.email_generator import generate_email
 import pandas as pd
 from datetime import date
 
