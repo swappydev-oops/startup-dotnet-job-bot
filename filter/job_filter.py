@@ -1,5 +1,6 @@
 KEYWORDS = [
-    ".net", "asp.net", "c#", "entity framework", "dotnet", "mvc", "asp.net core"
+    ".net", "dotnet", "asp", "c#", 
+    "backend", "full stack", "api"
 ]
 
 def is_dotnet_job(text):

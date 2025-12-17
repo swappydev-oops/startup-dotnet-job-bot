@@ -8,13 +8,18 @@ jobs = fetch_jobs()
 final_jobs = []
 
 for job in jobs:
-    if is_dotnet_job(job["title"]):
+    print("Checking job:", job["title"])
+    if is_dotnet_job(job["title"] + "" + job["description"]):
         job["bgv"] = estimate_bgv(job["description"])
         job["email_template"] = generate_email(job["company"], job["title"])
         final_jobs.append(job)
+    
+    if not final_jobs:
+        print("No Matching Job Found Today")
 
 today = date.today().isoformat()
 df = pd.DataFrame(final_jobs)
 df.to_csv(f"jobs_{today}.csv", index=False)
 
+print("Total jobs fetched:", len(jobs))
 print("CSV file created")
