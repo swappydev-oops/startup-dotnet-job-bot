@@ -4,26 +4,34 @@ from datetime import date
 
 def fetch_jobs():
     url = "https://wellfound.com/jobs?posted_today=true"
-    response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
-    soup = BeautifulSoup(response.text, "html.parser")
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(url, headers=headers)
 
+    soup = BeautifulSoup(response.text, "html.parser")
     jobs = []
     today = date.today().isoformat()
 
-    for job in soup.select("div[data-test='JobCard']"):
-        title = job.select_one("h2")
-        company = job.select_one("h3")
-        link = job.find("a", href=True)
+    job_cards = soup.find_all("a", href=True)
 
-        if not title or not company or not link:
+    for card in job_cards:
+        href = card["href"]
+
+        if "/jobs/" not in href:
+            continue
+
+        text = card.get_text(" ", strip=True)
+
+        if not text:
             continue
 
         jobs.append({
-            "company": company.text.strip(),
-            "title": title.text.strip(),
-            "description": title.text.strip(),
-            "url": "https://wellfound.com" + link["href"],
-            "date": today
+            "company": "Unknown Startup",
+            "title": text[:80],
+            "description": text,
+            "url": "https://wellfound.com" + href,
+            "date": today,
+            "source": "Wellfound"
         })
 
+    print(f"Wellfound jobs fetched: {len(jobs)}")
     return jobs

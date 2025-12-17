@@ -1,25 +1,28 @@
-from scraper.wellfound import fetch_jobs
+from scraper.wellfound import fetch_jobs as fetch_wellfound
+from scraper.cutshort import fetch_jobs as fetch_cutshort
 from filter.job_filter import is_dotnet_job, estimate_bgv
-from email_template.email_generator import generate_email
+from email_templates.email_generator import generate_email
 import pandas as pd
 from datetime import date
 
-jobs = fetch_jobs()
+jobs = []
+jobs.extend(fetch_wellfound())
+jobs.extend(fetch_cutshort())
+
+print("Total jobs collected:", len(jobs))
+
 final_jobs = []
 
 for job in jobs:
-    print("Checking job:", job["title"])
-    if is_dotnet_job(job["title"] + "" + job["description"]):
-        job["bgv"] = estimate_bgv(job["description"])
+    combined_text = job["title"] + " " + job["description"]
+
+    if is_dotnet_job(combined_text):
+        job["bgv"] = estimate_bgv(combined_text)
         job["email_template"] = generate_email(job["company"], job["title"])
         final_jobs.append(job)
-    
-    if not final_jobs:
-        print("No Matching Job Found Today")
 
 today = date.today().isoformat()
 df = pd.DataFrame(final_jobs)
 df.to_csv(f"jobs_{today}.csv", index=False)
 
-print("Total jobs fetched:", len(jobs))
-print("CSV file created")
+print("Final matching jobs:", len(final_jobs))

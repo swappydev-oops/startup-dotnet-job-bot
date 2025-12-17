@@ -1,11 +1,12 @@
 KEYWORDS = [
-    ".net", "dotnet", "asp", "c#", 
-    "backend", "full stack", "api"
+    ".net", "dotnet", "asp", "c#",
+    "backend", "full stack", "api",
+    "software engineer", "developer"
 ]
 
 def is_dotnet_job(text):
     text = text.lower()
-    return any(keyword in text for keyword in KEYWORDS)
+    return any(k in text for k in KEYWORDS)
 
 def estimate_bgv(text):
     text = text.lower()
