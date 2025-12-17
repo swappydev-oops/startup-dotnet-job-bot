@@ -11,27 +11,26 @@ def fetch_jobs():
     jobs = []
     today = date.today().isoformat()
 
-    job_cards = soup.find_all("a", href=True)
+    links = soup.find_all("a", href=True)
 
-    for card in job_cards:
-        href = card["href"]
+    for a in links:
+        href = a["href"]
 
         if "/jobs/" not in href:
             continue
 
-        text = card.get_text(" ", strip=True)
-
+        text = a.get_text(strip=True)
         if not text:
             continue
 
         jobs.append({
-            "company": "Unknown Startup",
-            "title": text[:80],
+            "source": "Wellfound",
+            "company": "Unknown",
+            "title": text[:100],
             "description": text,
             "url": "https://wellfound.com" + href,
-            "date": today,
-            "source": "Wellfound"
+            "date": today
         })
 
-    print(f"Wellfound jobs fetched: {len(jobs)}")
+    print("Wellfound jobs fetched:", len(jobs))
     return jobs

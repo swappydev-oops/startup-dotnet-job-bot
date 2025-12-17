@@ -11,24 +11,26 @@ def fetch_jobs():
     jobs = []
     today = date.today().isoformat()
 
-    job_cards = soup.find_all("div", class_="job-card")
+    links = soup.find_all("a", href=True)
 
-    for job in job_cards:
-        title_tag = job.find("h2")
-        company_tag = job.find("h3")
-        link_tag = job.find("a", href=True)
+    for a in links:
+        href = a["href"]
 
-        if not title_tag or not link_tag:
+        if "/job/" not in href:
+            continue
+
+        text = a.get_text(strip=True)
+        if not text:
             continue
 
         jobs.append({
-            "company": company_tag.text.strip() if company_tag else "Startup",
-            "title": title_tag.text.strip(),
-            "description": title_tag.text.strip(),
-            "url": "https://cutshort.io" + link_tag["href"],
-            "date": today,
-            "source": "Cutshort"
+            "source": "Cutshort",
+            "company": "Startup",
+            "title": text[:100],
+            "description": text,
+            "url": "https://cutshort.io" + href,
+            "date": today
         })
 
-    print(f"Cutshort jobs fetched: {len(jobs)}")
+    print("Cutshort jobs fetched:", len(jobs))
     return jobs
